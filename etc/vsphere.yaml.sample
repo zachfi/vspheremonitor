@@ -1,0 +1,7 @@
+---
+:datacenters:
+  - dc1
+  - dc2
+:host: server.example.net
+:user: monitor
+:password: secret
