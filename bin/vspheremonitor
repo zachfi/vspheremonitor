@@ -14,7 +14,7 @@ def run
                              :insecure => true
 
   data = Hash.new
-  data = VSphereMonitoring.process_all_datacenters(config[:datacenters],vim)
+  data[:vsphere] = VSphereMonitoring.process_all_datacenters(config[:datacenters],vim)
   data
 
 end
