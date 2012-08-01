@@ -10,5 +10,5 @@ VSphereMonitor is a tool to get some basic statistics out of a vSphere installat
 
 ### Basic Execution
 
-    vspheremonitor -c /opt/etc/monitoring
+    vspheremonitor -c /opt/etc/monitoring/vsphere.yaml
 
