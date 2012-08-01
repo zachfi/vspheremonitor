@@ -16,6 +16,11 @@ Gem::Specification.new do |gem|
 
    gem.executables << 'vspheremonitor'
 
+   gem.add_dependency('yaml')
+   gem.add_dependency('json')
+   gem.add_dependency('rbvmomi')
+   gem.add_dependency('alchemist')
+
 end
 
 
