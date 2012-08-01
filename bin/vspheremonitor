@@ -20,13 +20,19 @@ OptionParser.new do |opts|
     options[:verbose] = v
   end
 
-  opts.on("-c", "--config FILE", "Specify the configuration file") do |c|
-    options[:configfile] = c
+  opts.on("-c", "--config FILE", "Specify the configuration file") do |conf|
+    options[:configfile] = conf
   end
 
 end.parse!
 
 def run (options)
+
+  if options[:configfile].nil?
+    configfile = 'etc/vsphere.yaml'
+  else
+    configfile = options[:configfile]
+  end
 
   configfile = 'etc/vsphere.yaml' if options[:configfile].nil?
 
