@@ -1,9 +1,14 @@
 #! /usr/bin/env ruby
 
-require "vspheremonitoring"
-require "rbvmomi"
-require "json"
-require "yaml"
+begin
+  require "vspheremonitoring"
+  require "rbvmomi"
+  require "json"
+  require "yaml"
+rescue LoadError
+  puts 'Some of the required gems have not been found'
+  exit
+end
 
 def run
 
