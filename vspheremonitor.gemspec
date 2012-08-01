@@ -1,7 +1,7 @@
 Gem::Specification.new do |gem|
 
   gem.name    = 'vspheremonitor'
-  gem.version = '0.0.3'
+  gem.version = '0.0.4'
   gem.date    = Date.today.to_s
 
   gem.summary     = "A tool to get the highlights from the Puppet Dashboard"
@@ -16,7 +16,6 @@ Gem::Specification.new do |gem|
 
    gem.executables << 'vspheremonitor'
 
-   gem.add_dependency('yaml')
    gem.add_dependency('json')
    gem.add_dependency('rbvmomi')
    gem.add_dependency('alchemist')
