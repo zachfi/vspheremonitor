@@ -1,11 +1,11 @@
 Gem::Specification.new do |gem|
 
   gem.name    = 'vspheremonitor'
-  gem.version = '0.0.6'
+  gem.version = '0.0.7'
   gem.date    = Date.today.to_s
 
-  gem.summary     = "A tool to get the highlights from the Puppet Dashboard"
-  gem.description = "Parses json from the various node states on puppet dashboard and returns those values in a json blob"
+  gem.summary     = "A tool to get some basic statistics out of a vSphere installation."
+  gem.description = "Collects host and cluster metrics from vsphere and outputs json"
 
   gem.author   = 'Zach Leslie'
   gem.email    = 'xaque208@gmail.com'
