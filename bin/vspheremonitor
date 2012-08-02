@@ -5,12 +5,11 @@ begin
   require "rbvmomi"
   require "json"
   require "yaml"
+  require 'optparse'
 rescue LoadError
   puts 'Some of the required gems have not been found'
   exit
 end
-
-require 'optparse'
 
 options = {}
 OptionParser.new do |opts|
@@ -33,8 +32,6 @@ def run (options)
   else
     configfile = options[:configfile]
   end
-
-  configfile = 'etc/vsphere.yaml' if options[:configfile].nil?
 
   config = YAML::load(File.read(configfile))
   vim = RbVmomi::VIM.connect :host     => config[:host],
