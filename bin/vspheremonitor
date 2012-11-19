@@ -6,6 +6,7 @@ begin
   require "json"
   require "yaml"
   require 'optparse'
+  require 'awesome_print'
 rescue LoadError
   puts 'Some of the required gems have not been found'
   exit
@@ -40,7 +41,7 @@ def run (options)
                              :insecure => true
 
   data = Hash.new
-  data[:vsphere] = VSphereMonitoring.process_all_datacenters(config[:datacenters],vim)
+  data[:vsphere] = VSphereMonitoring.process_all_datacenters(vim)
   data
 
 end
