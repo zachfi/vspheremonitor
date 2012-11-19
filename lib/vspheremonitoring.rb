@@ -107,12 +107,14 @@ module VSphereMonitoring
     data
   end
 
-  def process_all_datacenters (datacenterlist,vim)
+  def process_all_datacenters (vim)
+
+    rootFolder = vim.serviceInstance.content.rootFolder
+    dclist = rootFolder.children.select {|d| d.class == RbVmomi::VIM::Datacenter }
 
     data = Hash.new
-    datacenterlist.each do |datacenter|
-      dc = vim.serviceInstance.find_datacenter datacenter
-      data[dc.name] = VSphereMonitoring.process_datacenter(dc)
+    dclist.each do |datacenter|
+      data[datacenter.name] = VSphereMonitoring.process_datacenter(datacenter)
     end
     data
 

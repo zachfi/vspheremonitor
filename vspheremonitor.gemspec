@@ -1,7 +1,7 @@
 Gem::Specification.new do |gem|
 
   gem.name    = 'vspheremonitor'
-  gem.version = '0.0.7'
+  gem.version = '0.1.0'
   gem.date    = Date.today.to_s
 
   gem.summary     = "A tool to get some basic statistics out of a vSphere installation."
