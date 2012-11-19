@@ -7,45 +7,56 @@ begin
   require "yaml"
   require 'optparse'
   require 'awesome_print'
-rescue LoadError
-  puts 'Some of the required gems have not been found'
-  exit
+  require 'cri'
+rescue LoadError => e
+  puts "Unable to load library: #{e}"
+  exit 1
 end
 
-options = {}
-OptionParser.new do |opts|
-  opts.banner = "Usage: vspheremonitor [options]"
 
-  opts.on("-v", "--verbose", "Be less quiet") do |v|
-    options[:verbose] = v
+command = Cri::Command.define do
+  name __FILE__
+  usage __FILE__ + " [options]"
+  summary 'Collect metrics from VMware vSphere'
+
+  flag   :h, :help,  'show help for this command' do |value, cmd|
+    puts cmd.help
+    exit 0
   end
+  flag   :v, :verbose,  'Be less quiet'
+  option :c, :conf,     'Specify the configuration file', :argument => :required
 
-  opts.on("-c", "--config FILE", "Specify the configuration file") do |conf|
-    options[:configfile] = conf
+  run do |opts, args, cmd|
+    configfile = opts[:conf] || 'etc/vsphere.yaml'
+
+    if opts[:verbose]
+      starttime = Time.now
+      puts "Initializing at #{starttime}"
+    end
+
+    puts "Loading configuration #{configfile}" if opts[:verbose]
+    config = YAML::load(File.read(configfile))
+    config[:opts] = opts
+
+    p = VSphereMonitoring.new(config)
+
   end
-
-end.parse!
-
-def run (options)
-
-  if options[:configfile].nil?
-    configfile = 'etc/vsphere.yaml'
-  else
-    configfile = options[:configfile]
-  end
-
-  config = YAML::load(File.read(configfile))
-  vim = RbVmomi::VIM.connect :host     => config[:host],
-                             :user     => config[:user],
-                             :password => config[:password],
-                             :insecure => true
-
-  data = Hash.new
-  data[:vsphere] = VSphereMonitoring.process_all_datacenters(vim)
-  data
 
 end
 
-output = run(options)
-puts output.to_json
+#options = {}
+#OptionParser.new do |opts|
+#  opts.banner = "Usage: vspheremonitor [options]"
+#
+#  opts.on("-v", "--verbose", "Be less quiet") do |v|
+#    options[:verbose] = v
+#  end
+#
+#  opts.on("-c", "--config FILE", "Specify the configuration file") do |conf|
+#    options[:configfile] = conf
+#  end
+#
+#end.parse!
+
+command.run(ARGV)
 

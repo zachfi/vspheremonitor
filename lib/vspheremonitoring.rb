@@ -4,10 +4,30 @@ require 'pp'
 require 'alchemist'
 require 'yaml'
 
-module VSphereMonitoring
-  module_function
+class VSphereMonitoring
+
+  def initialize (config)
+    @config = config
+    @verbose = config[:opts][:verbose]
+
+    speak("Building connection to vsphere")
+    @vim = RbVmomi::VIM.connect :host     => config[:host],
+                               :user     => config[:user],
+                               :password => config[:password],
+                               :insecure => true
+
+    p = Hash.new
+    p[:vsphere] = process_all_datacenters()
+    puts p.to_json
+  end
+  #module_function
+
+  def speak(what)
+    puts what if @verbose
+  end
 
   def host_memory (host)
+    speak("gathering memory stats for #{host.name}")
     data            = Hash.new
     data['total']   = host.hardware.memorySize.bytes.to.megabytes.to_f
     data['usage']   = host.summary.quickStats.overallMemoryUsage.megabytes.to_f
@@ -16,6 +36,7 @@ module VSphereMonitoring
   end
 
   def host_cpu (host)
+    speak("gathering cpu stats for #{host.name}")
     data = Hash.new
     data['Mhz']      = host.hardware.cpuInfo.hz / 1000 / 1000
     data['cores']    = host.hardware.cpuInfo.numCpuCores
@@ -26,6 +47,7 @@ module VSphereMonitoring
   end
 
   def host_stats (host)
+    speak("gathering host stats for #{host.name}")
     data = Hash.new
     data['memory']  = host_memory(host)
     data['cpu']     = host_cpu(host)
@@ -33,6 +55,7 @@ module VSphereMonitoring
   end
 
   def cluster_memory (cluster)
+    speak("gathering cluster memory stats for #{cluster.name}")
     data = Hash.new
     data['totalMemory']     = cluster.summary.totalMemory
     data['effectiveMemory'] = cluster.summary.effectiveMemory
@@ -40,6 +63,7 @@ module VSphereMonitoring
   end
 
   def cluster_cpu (cluster)
+    speak("gathering cluster cpu stats for #{cluster.name}")
     data = Hash.new
     data['totalCpu']      = cluster.summary.totalCpu
     data['numCpuCores']   = cluster.summary.numCpuCores
@@ -49,6 +73,7 @@ module VSphereMonitoring
   end
 
   def cluster_stats (cluster)
+    speak("gathering cluster stats for #{cluster.name}")
     data = Hash.new
     data['cpu']               = cluster_cpu(cluster)
     data['memory']            = cluster_memory(cluster)
@@ -61,6 +86,7 @@ module VSphereMonitoring
   end
 
   def datastore_stats (datastore)
+    speak("gathering datastore stats for #{datastore.name}")
     data = Hash.new
     datastore.RefreshDatastore
     capacity = datastore.summary.capacity
@@ -73,11 +99,14 @@ module VSphereMonitoring
   end
 
   def network_stats (network)
+    speak("gathering network stats for #{network.name}")
     data = Hash.new
     data
   end
 
   def process_datacenter (dc)
+    speak("collecting metrics for datacenter #{dc.name}")
+
     data = Hash.new
     data['hypers'] = Hash.new
     data['clusters'] = Hash.new
@@ -107,14 +136,14 @@ module VSphereMonitoring
     data
   end
 
-  def process_all_datacenters (vim)
+  def process_all_datacenters ()
 
-    rootFolder = vim.serviceInstance.content.rootFolder
+    rootFolder = @vim.serviceInstance.content.rootFolder
     dclist = rootFolder.children.select {|d| d.class == RbVmomi::VIM::Datacenter }
 
     data = Hash.new
     dclist.each do |datacenter|
-      data[datacenter.name] = VSphereMonitoring.process_datacenter(datacenter)
+      data[datacenter.name] = process_datacenter(datacenter)
     end
     data
 
