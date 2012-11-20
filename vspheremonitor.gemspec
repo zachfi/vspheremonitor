@@ -1,7 +1,7 @@
 Gem::Specification.new do |gem|
 
   gem.name    = 'vspheremonitor'
-  gem.version = '0.1.0'
+  gem.version = '0.1.1'
   gem.date    = Date.today.to_s
 
   gem.summary     = "A tool to get some basic statistics out of a vSphere installation."
@@ -19,6 +19,7 @@ Gem::Specification.new do |gem|
    gem.add_dependency('json')
    gem.add_dependency('rbvmomi')
    gem.add_dependency('alchemist')
+   gem.add_dependency('awesome_print')
 
 end
 
